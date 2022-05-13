@@ -8,7 +8,10 @@ async function getMovie(name, page) {
 }
 
 let page = 1;
+let done = false;
 let totalResults = 0;
+const innerEl = document.querySelector('.inner');
+const searchBoxEl = document.querySelector('.search-box');
 const searchInputEl = document.querySelector('input');
 const searchBtnEl = document.querySelector('.btn');
 const resultsEl = document.querySelector('.results');
@@ -18,62 +21,152 @@ const titleBoxEl = document.querySelector('.title-box');
 
 
 
-// posterEl.innerHTML = 
-// '<div><img src="" alt="" /><span></span></div>';
+const moviesEl = document.querySelector('.movies');
+const observerEl = document.querySelector('.observer');
 
 
-
-searchBtnEl.addEventListener('click', async () => {
-  posterBoxEl.innerHTML = '';
-  coverBoxEl.innerHTML = '';
-  titleBoxEl.innerHTML = '';
-  const movies = await getMovie(searchInputEl.value, page = 1);
-  const { Search, totalResults } = movies;
-  resultsEl.textContent = 'About' + ' ' + totalResults+ ' ' + 'results';
-  Search.forEach(movie => {
-  // 커버
-    const coverEl = document.createElement('div'); 
-    coverBoxEl.append(coverEl);
-  // 포스터
-    const img = document.createElement('img'); 
-    img.src = movie.Poster;
-    posterBoxEl.append(img);
-  // 제목
-    const pEl = document.createElement('p');
-    titleBoxEl.append(pEl);
-    const spanEl = document.createElement('span')
-    pEl.append(spanEl)
-    spanEl.textContent = movie.Title;
+const divEl = document.createElement('div'); 
+innerEl.prepend(divEl);
+divEl.classList.add('main');
+const mainTitleEl = document.querySelector('.main');
+const spanEl = document.createElement('span');
+mainTitleEl.prepend(spanEl)
+spanEl.textContent = 'MoviesearcH';
 
 
-  })
-  console.log(movies);
+window.addEventListener('wheel', () => {
+  console.log('ok');
+  mainTitleEl.classList.add('bye');
+  searchBoxEl.classList.add('hello');
 })
 
-document.addEventListener('scroll', async (e) => {
-  const { clientHeight, scrollTop, scrollHeight } = e.target.scrollingElement;
-  if (clientHeight + scrollTop >= scrollHeight) {
-    page++;
-    const movies = await getMovie(searchInputEl.value, page);
-    const {Search} = movies;
-    console.log(movies)
-    Search.forEach(movie => {
+function seeMovie(Search) {
+  Search.forEach(movie => {
     // 커버
-      const coverEl = document.createElement('div'); 
-      coverBoxEl.append(coverEl);
+      // divEl.classList.add('cover')
+      // const coverEl = document.querySelector('cover')
+      // coverBoxEl.append(coverEl);
     // 포스터
       const img = document.createElement('img'); 
-      img.src = movie.Poster;
-      posterBoxEl.append(img);
+      function posterImg() {
+        if (movie.Poster) {
+          return movie.Poster;
+        } else {
+          // 안될시 이미지
+        }
+      }
+      img.src = posterImg();
+      // 제목
+      const title = document.createElement('div');
+      title.textContent = movie.Title;
+      // 영화 요소
+      const movieEl = document.createElement('div');
+      movieEl.append(img,title)
+      moviesEl.append(movieEl);
+
+      
     // 제목
-      const pEl = document.createElement('p');
-      titleBoxEl.append(pEl);
-      const spanEl = document.createElement('span')
-      pEl.append(spanEl)
-      spanEl.textContent = movie.Title;
+      // const pEl = document.createElement('p');
+      // titleBoxEl.append(pEl);
+      // const spanEl = document.createElement('span')
+      // pEl.append(spanEl)
+      // spanEl.textContent = movie.Title;
     })
-  } 
-});
+    observerEl.classList.add('show')
+}
+
+function io() {
+  const callback = function (entries) {
+    entries.forEach(entry => {
+      // 관찰 대상이 viewport 안에 들어온 경우 
+      if (entry.isIntersecting) {
+        console.log('end!!')
+        console.timeEnd('123')
+        moreMovies()
+      }
+    })
+  }
+
+  const io = new IntersectionObserver(callback)
+
+  // 관찰할 대상을 선언하고, 해당 속성을 관찰시킨다.
+  console.log(observerEl)
+  io.observe(observerEl);
+}
+io()
+
+searchBtnEl.addEventListener('click', async () => {
+  done = false;
+  const movies = await getMovie(searchInputEl.value, page = 1);
+  console.time('123')
+  const { Search, totalResults } = movies;
+  resultsEl.textContent = 'About' + ' ' + totalResults+ ' ' + 'results';
+  moviesEl.innerHTML = ''
+  seeMovie(Search)
+  setTimeout(() => {
+    done = true;
+  })
+  console.log('first',movies);
+})
+
+// document.addEventListener('scroll', async (e) => {
+//   const { clientHeight, scrollTop, scrollHeight } = e.target.scrollingElement;
+//   if (clientHeight + scrollTop >= scrollHeight) {
+//     page++;
+//     const movies = await getMovie(searchInputEl.value, page);
+//     const { Search } = movies;
+//     seeMovie(Search)
+//     console.log(movies)
+//   } 
+// });
+
+    
+async function moreMovies() {
+  if(!done) {
+    return;
+  }
+  page++;
+  const movies = await getMovie(searchInputEl.value, page);
+  const { Search } = movies;
+  seeMovie(Search)
+  console.log('moreMovies',movies)
+}
+
+
+// const ioCallback = (entries, io) => {
+//   entries.forEach((entry) => {
+//     if (entry.isIntersecting) {
+//       console.log('plz')
+//     }
+//   });
+// };
+
+
+// const io = new IntersectionObserver(ioCallback);
+
+// io.observe(posterBoxEl.lastChild)
+
+
+
+
+
+const poster = document.querySelector('img')
+
+// const callback = function (entries) {
+//     entries.forEach(entry => {
+//       // 관찰 대상이 viewport 안에 들어온 경우 
+//       if (entry.isIntersecting) {
+//         console.log('end!!')
+//       }
+//     })
+//   }
+
+//   const io = new IntersectionObserver(callback)
+
+//   // 관찰할 대상을 선언하고, 해당 속성을 관찰시킨다.
+//   io.observe(posterBoxEl.lastChild);
+
+
 
 
 

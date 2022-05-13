@@ -1,6 +1,8 @@
 body {
   background-color: tomato;
   position: relative;
+  font-family: 'Koulen';
+  // font-size: 10px;
 }
 
 section {
@@ -19,6 +21,22 @@ section {
     right: 0;
     margin: -10% 0;
     text-align: center;
+    .main {
+      position: absolute;
+      top: -15%;
+      opacity: 1;
+      perspective: 6000;
+      span {
+        font-size: 17.5rem;
+      }
+    }
+    .bye {
+      // transform-origin: bottom ;
+      transform: rotateX(90deg);
+      transition: 1s;
+      opacity: 0;
+    }
+
     .search-box {
       background-color: #fff;
       width: 100%;
@@ -27,6 +45,7 @@ section {
       justify-content: center;
       align-items: center;
       border-radius: 1rem;
+      opacity: 0;
       input {
         font-size: 6rem;
         // border: none;
@@ -37,6 +56,10 @@ section {
         font-size: 4rem;
         margin-left: 2rem;
       }
+    }
+    .hello {
+      transition: 1s;
+      opacity: 1;
     }
 
     .total {
@@ -93,5 +116,12 @@ section {
 
 
     }
+  }
+}
+
+.observer {
+  display: none;
+  &.show {
+    display: block;
   }
 }
