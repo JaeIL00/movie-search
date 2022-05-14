@@ -1,185 +1,128 @@
-// 영화 정보 불러오기
-// 영화 정보 불러오기
 import 'regenerator-runtime';
-async function getMovie(name, page) {
-  let res = await fetch(`https://www.omdbapi.com?apikey=7035c60c&s=${name}&page=${page}`);
-  res = await res.json();
-  return res;
-}
 
+
+// 초기화!
 let page = 1;
-let done = false;
+let firstRequest = true;
+let loading = false;
+let movies = [];
 let totalResults = 0;
 const innerEl = document.querySelector('.inner');
 const searchBoxEl = document.querySelector('.search-box');
 const searchInputEl = document.querySelector('input');
 const searchBtnEl = document.querySelector('.btn');
 const resultsEl = document.querySelector('.results');
-const coverBoxEl = document.querySelector('.cover-box');
-const posterBoxEl = document.querySelector('.poster-box');
-const titleBoxEl = document.querySelector('.title-box');
-
-
-
 const moviesEl = document.querySelector('.movies');
 const observerEl = document.querySelector('.observer');
 
-
 const divEl = document.createElement('div'); 
-innerEl.prepend(divEl);
-divEl.classList.add('main');
-const mainTitleEl = document.querySelector('.main');
-const spanEl = document.createElement('span');
-mainTitleEl.prepend(spanEl)
-spanEl.textContent = 'MoviesearcH';
+// innerEl.prepend(divEl);
+// divEl.classList.add('main');
+// const mainTitleEl = document.querySelector('.main');
+// const spanEl = document.createElement('span');
+// mainTitleEl.prepend(spanEl)
+// spanEl.textContent = 'Moviesearch';
+// searchInputEl.setAttribute('placeholder', '통합검색');
 
 
-window.addEventListener('wheel', () => {
-  console.log('ok');
-  mainTitleEl.classList.add('bye');
-  searchBoxEl.classList.add('hello');
+// 영화를 더 가져와야 하는지 관찰!
+const io = new IntersectionObserver(function (entries) {
+  entries.forEach(entry => {
+    // 관찰 대상이 viewport 안에 들어온 경우
+    if (entry.isIntersecting) {
+      // console.log('end!!');
+      moreMovies();
+    }
+  });
+});
+// 관찰할 대상을 선언하고, 해당 속성을 관찰시킨다.
+io.observe(observerEl);
+
+
+// Events!
+// window.addEventListener('wheel', () => {
+//   console.log('wheel ok');
+//   mainTitleEl.classList.add('bye');
+//   searchBoxEl.classList.add('hello');
+// })
+searchInputEl.addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    firstMovies()
+  }
 })
+searchBtnEl.addEventListener('click', firstMovies)
 
-function seeMovie(Search) {
+
+
+
+// Functions!
+// 화면에 출력하기!
+function renderMovies(Search = []) {
+  const movieEls = []
   Search.forEach(movie => {
-    // 커버
-      // divEl.classList.add('cover')
-      // const coverEl = document.querySelector('cover')
-      // coverBoxEl.append(coverEl);
     // 포스터
-      const img = document.createElement('img'); 
-      function posterImg() {
-        if (movie.Poster) {
-          return movie.Poster;
-        } else {
-          // 안될시 이미지
-        }
+    const img = document.createElement('img'); 
+    function posterImg() {
+      if (movie.Poster) {
+        return movie.Poster;
+      } else {
+        // 안될시 이미지
       }
-      img.src = posterImg();
-      // 제목
-      const title = document.createElement('div');
-      title.textContent = movie.Title;
-      // 영화 요소
-      const movieEl = document.createElement('div');
-      movieEl.append(img,title)
-      moviesEl.append(movieEl);
-
-      
+    }
+    img.src = posterImg();
     // 제목
-      // const pEl = document.createElement('p');
-      // titleBoxEl.append(pEl);
-      // const spanEl = document.createElement('span')
-      // pEl.append(spanEl)
-      // spanEl.textContent = movie.Title;
-    })
-    observerEl.classList.add('show')
-}
-
-function io() {
-  const callback = function (entries) {
-    entries.forEach(entry => {
-      // 관찰 대상이 viewport 안에 들어온 경우 
-      if (entry.isIntersecting) {
-        console.log('end!!')
-        console.timeEnd('123')
-        moreMovies()
-      }
-    })
-  }
-
-  const io = new IntersectionObserver(callback)
-
-  // 관찰할 대상을 선언하고, 해당 속성을 관찰시킨다.
-  console.log(observerEl)
-  io.observe(observerEl);
-}
-io()
-
-searchBtnEl.addEventListener('click', async () => {
-  done = false;
-  const movies = await getMovie(searchInputEl.value, page = 1);
-  console.time('123')
-  const { Search, totalResults } = movies;
-  resultsEl.textContent = 'About' + ' ' + totalResults+ ' ' + 'results';
-  moviesEl.innerHTML = ''
-  seeMovie(Search)
-  setTimeout(() => {
-    done = true;
+    const title = document.createElement('div');
+    title.textContent = movie.Title;
+    // 영화 요소
+    const movieEl = document.createElement('div');
+    movieEl.append(img, title);
+    movieEls.push(movieEl);
   })
-  console.log('first',movies);
-})
-
-// document.addEventListener('scroll', async (e) => {
-//   const { clientHeight, scrollTop, scrollHeight } = e.target.scrollingElement;
-//   if (clientHeight + scrollTop >= scrollHeight) {
-//     page++;
-//     const movies = await getMovie(searchInputEl.value, page);
-//     const { Search } = movies;
-//     seeMovie(Search)
-//     console.log(movies)
-//   } 
-// });
-
-    
-async function moreMovies() {
-  if(!done) {
-    return;
-  }
-  page++;
-  const movies = await getMovie(searchInputEl.value, page);
-  const { Search } = movies;
-  seeMovie(Search)
-  console.log('moreMovies',movies)
+  moviesEl.append(...movieEls); // 한 번에 출력!   왜 배열에 담았다가 다시 배열에서 빼지? 어차피 뺄꺼 그냥 안담고 보내면 안되나? 포이치로 10개를 만들고 담아야하자너 10번 동작할때 매번 넣는것보다 하나로 모아서 넣으려고 포이치에서 배열을 쓰고 나와서 한번에 넣는거지
 }
-
-
-// const ioCallback = (entries, io) => {
-//   entries.forEach((entry) => {
-//     if (entry.isIntersecting) {
-//       console.log('plz')
-//     }
-//   });
-// };
-
-
-// const io = new IntersectionObserver(ioCallback);
-
-// io.observe(posterBoxEl.lastChild)
-
-
-
-
-
-const poster = document.querySelector('img')
-
-// const callback = function (entries) {
-//     entries.forEach(entry => {
-//       // 관찰 대상이 viewport 안에 들어온 경우 
-//       if (entry.isIntersecting) {
-//         console.log('end!!')
-//       }
-//     })
+// 실제 영화 가져오기!
+async function getMovie(name) {
+  let res = await fetch(`https://www.omdbapi.com?apikey=7035c60c&s=${name}&page=${page}`);
+  res = await res.json();
+  return res;
+}
+// 로딩 애니메이션(?) 동작!
+// function exeLoading(state) {
+//   loading = state
+//   if (loading) {
+//     observerEl.classList.add('loading')
+//   } else {
+//     observerEl.classList.remove('loading')
 //   }
+// }
+// 영화 기본 검색!
+async function firstMovies() {
+  exeLoading(true);
+  firstRequest = true; // 첫 요청 상태 만들기!
+  moviesEl.innerHTML = '' // 옵저버가 보이는 시점이 최대한 앞서 동작하도록, 목록 초기화부터!
+  page = 1;
+  const { Search, totalResults: tr } = await getMovie(searchInputEl.value);
+  resultsEl.textContent = `About ${tr} results`;
+  movies = Search
+  totalResults = Number(tr)
+  renderMovies(Search)
+  exeLoading(false);
+  firstRequest = false;
+  
+  console.log('영화 기본 검색!')
+}
+// 영화 추가 검색!
+async function moreMovies() {
+  if (firstRequest) return; // 첫 요청에선 동작하지 않음!
+  if (movies.length >= totalResults) return; // 더 가져올 영화가 없으면 동작하지 않음!
+  
+  exeLoading(true);
+  page += 1;
+  const { Search } = await getMovie(searchInputEl.value);
+  movies.push(...Search)
+  renderMovies(Search)
+  exeLoading(false);
 
-//   const io = new IntersectionObserver(callback)
-
-//   // 관찰할 대상을 선언하고, 해당 속성을 관찰시킨다.
-//   io.observe(posterBoxEl.lastChild);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-searchInputEl.setAttribute('placeholder', '통합검색');
+  console.log(movies.length, totalResults);
+  console.log('영화 추가 검색!')
+}
