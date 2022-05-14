@@ -1,3 +1,4 @@
+import { list } from 'postcss';
 import 'regenerator-runtime';
 
 
@@ -10,6 +11,8 @@ let totalResults = 0;
 const innerEl = document.querySelector('.inner');
 const searchBoxEl = document.querySelector('.search-box');
 const searchInputEl = document.querySelector('input');
+const typeBtnEl = document.querySelector('.type-btn')
+const typeEl = document.querySelector('.type')
 const searchBtnEl = document.querySelector('.btn');
 const resultsEl = document.querySelector('.results');
 const moviesEl = document.querySelector('.movies');
@@ -23,6 +26,9 @@ const divEl = document.createElement('div');
 // mainTitleEl.prepend(spanEl)
 // spanEl.textContent = 'Moviesearch';
 // searchInputEl.setAttribute('placeholder', '통합검색');
+
+
+
 
 
 // 영화를 더 가져와야 하는지 관찰!
@@ -39,6 +45,9 @@ const io = new IntersectionObserver(function (entries) {
 io.observe(observerEl);
 
 
+
+
+
 // Events!
 // window.addEventListener('wheel', () => {
 //   console.log('wheel ok');
@@ -51,6 +60,18 @@ searchInputEl.addEventListener('keydown', event => {
   }
 })
 searchBtnEl.addEventListener('click', firstMovies)
+// const liEl = document.querySelector('.type-name')
+typeBtnEl.addEventListener('click', (event) => {
+  event.stopPropagation()
+  typeEl.classList.add('active')
+})
+window.addEventListener('click', () => {
+  typeEl.classList.remove('active')
+})
+// liEl.addEventListener('click', () => {
+//   console.log('hi')
+// })
+
 
 
 
@@ -73,28 +94,32 @@ function renderMovies(Search = []) {
     // 제목
     const title = document.createElement('div');
     title.textContent = movie.Title;
+    // 연도
+    const year = document.createElement('div');
+    year.textContent = movie.Year
     // 영화 요소
     const movieEl = document.createElement('div');
-    movieEl.append(img, title);
+    movieEl.classList.add('movie-box')
+    movieEl.append(img, title,year);
     movieEls.push(movieEl);
   })
-  moviesEl.append(...movieEls); // 한 번에 출력!   왜 배열에 담았다가 다시 배열에서 빼지? 어차피 뺄꺼 그냥 안담고 보내면 안되나? 포이치로 10개를 만들고 담아야하자너 10번 동작할때 매번 넣는것보다 하나로 모아서 넣으려고 포이치에서 배열을 쓰고 나와서 한번에 넣는거지
+  moviesEl.append(...movieEls); // 한 번에 출력!
 }
 // 실제 영화 가져오기!
 async function getMovie(name) {
-  let res = await fetch(`https://www.omdbapi.com?apikey=7035c60c&s=${name}&page=${page}`);
+  let res = await fetch(`https://www.omdbapi.com?apikey=7035c60c&s=${name}&page=${page}&type=`);
   res = await res.json();
   return res;
 }
 // 로딩 애니메이션(?) 동작!
-// function exeLoading(state) {
-//   loading = state
-//   if (loading) {
-//     observerEl.classList.add('loading')
-//   } else {
-//     observerEl.classList.remove('loading')
-//   }
-// }
+function exeLoading(state) {
+  loading = state
+  if (loading) {
+    observerEl.classList.add('loading')
+  } else {
+    observerEl.classList.remove('loading')
+  }
+}
 // 영화 기본 검색!
 async function firstMovies() {
   exeLoading(true);
@@ -110,13 +135,14 @@ async function firstMovies() {
   firstRequest = false;
   
   console.log('영화 기본 검색!')
+  console.log(Search)
 }
 // 영화 추가 검색!
 async function moreMovies() {
   if (firstRequest) return; // 첫 요청에선 동작하지 않음!
   if (movies.length >= totalResults) return; // 더 가져올 영화가 없으면 동작하지 않음!
   
-  exeLoading(true);
+  // exeLoading(true);
   page += 1;
   const { Search } = await getMovie(searchInputEl.value);
   movies.push(...Search)
@@ -125,4 +151,6 @@ async function moreMovies() {
 
   console.log(movies.length, totalResults);
   console.log('영화 추가 검색!')
+  const posi = observerEl.getBoundingClientRect()
+  console.log(posi.y)
 }

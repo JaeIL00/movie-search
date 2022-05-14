@@ -8,9 +8,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Koulen&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,600,0,0" />
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css">
   <link rel="stylesheet" href="./scss/main.scss">
@@ -24,8 +24,19 @@
 
       <div class="search-box">
         <input type="text" />
+        <div class="type-container">
+          <div class="type-btn">
+            <span>Type</span>  
+          </div>
+          <ul class="type">
+            <li class="type-name">All</li>
+            <li class="type-name">Movie</li>
+            <li class="type-name">Series</li>
+            <li class="type-name">Episode</li>
+          </ul>
+        </div>
         <div class="btn">
-          <div class="material-icons">search</div>
+          <span class="material-symbols-outlined">search</span>
         </div>
       </div>
 
@@ -34,13 +45,16 @@
         <span class="results"></span>
       </div>
 
-      <ul class="movies">
 
-      </ul>
+      <ul class="movies"></ul>
+
+
       <div class="observer">
-        <span>Loading...</span>
+        <!-- <span>Loading...</span> -->
       </div>
 
+
+      <div>.</div>
     </div>
   </section>
 </body>
