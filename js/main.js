@@ -12,8 +12,11 @@ let timer;
 
 
 
+const bodyEl = document.querySelector('body');
 const innerEl = document.querySelector('.inner');
+const mainEl = document.querySelector('.main');
 const searchBoxEl = document.querySelector('.search-box');
+const inputEl = document.querySelector('.input');
 const searchInputEl = document.querySelector('input');
 const typeBtnEl = document.querySelector('.type-btn');
 const typeStartEl = document.querySelector('.type-start');
@@ -31,14 +34,8 @@ const liTwoEl = liEl[1].textContent;
 const liThrEl = liEl[2].textContent;
 const liFoEl = liEl[3].textContent;
 
-const divEl = document.createElement('div'); 
-// innerEl.prepend(divEl);
-// divEl.classList.add('main');
-// const mainTitleEl = document.querySelector('.main');
-// const spanEl = document.createElement('span');
-// mainTitleEl.prepend(spanEl)
-// spanEl.textContent = 'Moviesearch';
-// searchInputEl.setAttribute('placeholder', '통합검색');
+
+searchInputEl.setAttribute('placeholder', 'Movie Tree');
 
 
 // 영화를 더 가져와야 하는지 관찰!
@@ -47,6 +44,7 @@ const io = new IntersectionObserver(function (entries) {
   entries.forEach(entry => {
     // 관찰 대상이 viewport 안에 들어온 경우
     if (entry.isIntersecting) {
+      console.log('why')
       moreMovies();
     }
   });
@@ -59,12 +57,20 @@ io.observe(observerEl);
 
 // Events!
 // Events!
-// window.addEventListener('wheel', () => {
-//   console.log('wheel ok');
-//   mainTitleEl.classList.add('bye');
-//   searchBoxEl.classList.add('hello');
-// })
-
+// 메인 타이틀 이벤트!
+window.addEventListener('wheel', () => {
+  console.log('wheel ok');
+  mainEl.classList.add('bye');
+  searchBoxEl.classList.add('hello');
+  inputEl.classList.remove('input-off');
+  bodyEl.classList.remove('cursor');
+}, {
+  once: true
+})
+searchInputEl.addEventListener('focus', () => {
+  searchBoxEl.classList.add('normal-search');
+  searchBoxEl.classList.remove('hello');
+})
 // 검색 이벤트!
 searchInputEl.addEventListener('keydown', event => {
   if (event.key === 'Enter') {
@@ -110,10 +116,10 @@ window.addEventListener('scroll', function (e) {
       if(window.scrollY > 371) {
         searchBoxEl.classList.add('fix');
         searchInputEl.addEventListener('focus', () => {
-          searchBoxEl.classList.add('on');
+          searchBoxEl.classList.add('search-on');
         });
         searchInputEl.addEventListener('blur', () => {
-          searchBoxEl.classList.remove('on');
+          searchBoxEl.classList.remove('search-on');
         });
       } else {
         searchBoxEl.classList.remove('fix');
@@ -135,7 +141,7 @@ function renderMovies(Search = []) {
       if ('N/A' !== movie.Poster) {
         return movie.Poster;
       } else {
-        return 'https://static.wikia.nocookie.net/just-because/images/0/0c/NoImage_Available.png/revision/latest/scale-to-width-down/280?cb=20170601005615';
+        return 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/660px-No-Image-Placeholder.svg.png?20200912122019';
       }
     }
     img.src = posterImg();
@@ -152,7 +158,8 @@ function renderMovies(Search = []) {
     title.classList.add('title');
     year.classList.add('year');
     googleEl.classList.add('google');
-    googleEl.href = `https://www.google.com/search?q=${movie.Title}+movie&sxsrf=ALiCzsZKBUOygGlbwT-vvsUzyqKs8dnCTQ%3A1652558200388&ei=eAmAYomnF4-hoASaqZKoBA&ved=0ahUKEwiJw4SE49_3AhWPEIgKHZqUBEUQ4dUDCA8&uact=5&oq=%ED%95%B4%EB%A6%AC%ED%8F%AC%ED%84%B0&gs_lcp=Cgdnd3Mtd2l6EAMyCggAEIAEEIcCEBQyDgguEIAEELEDEIMBENQCMgsIABCABBCxAxCDATILCAAQgAQQsQMQgwEyCAgAEIAEELEDMg4ILhCABBCxAxCDARDUAjIOCC4QgAQQsQMQgwEQ1AIyCwgAEIAEELEDEIMBMgsIABCABBCxAxCDATIFCAAQgAQ6BwgAEEcQsAM6BwgjEOoCECc6EQguEIAEELEDEIMBEMcBENEDOgoILhDHARCvARADOgQILhADOgsILhCABBCxAxCDAToECAAQQzoNCC4QsQMQgwEQ1AIQQ0oECEEYAEoECEYYAFDtFFigImDxImgHcAF4A4ABmQGIAdEHkgEDMC43mAEAoAEBsAEKyAEKwAEB&sclient=gws-wiz`;
+    googleEl.href = `https://www.google.com/search?q=${movie.Title}+movie`;
+    googleEl.target = '_blank'
     googleEl.textContent = 'G'
     movieEl.append(img, title, year, googleEl);
     movieEls.push(movieEl);
@@ -178,6 +185,11 @@ function exeLoading(state) {
     observerEl.classList.remove('loading');
   }
 }
+
+
+console.log(NaN || 0)
+
+
 // 영화 기본 검색!
 async function firstMovies() {
   exeLoading(true);
@@ -186,6 +198,8 @@ async function firstMovies() {
   page = 1;
   let { Search, totalResults: tr } = await getMovie(searchInputEl.value);
   // tr이 언디파인드이면 숫자 0을 반환해라??
+  totalResults = Number(tr)
+  tr = tr || 0
   resultsEl.textContent = `About ${tr} results`;
   movies = Search;
   console.log('hi'+tr);
