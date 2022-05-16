@@ -9,9 +9,7 @@ let loading = false;
 let movies = [];
 let totalResults = 0;
 let timer;
-
 const bodyEl = document.querySelector('body');
-const innerEl = document.querySelector('.inner');
 const mainEl = document.querySelector('.main');
 const searchBoxEl = document.querySelector('.search-box');
 const inputEl = document.querySelector('.input');
@@ -24,17 +22,13 @@ const searchBtnEl = document.querySelector('.search-btn');
 const resultsEl = document.querySelector('.results');
 const moviesEl = document.querySelector('.movies');
 const observerEl = document.querySelector('.observer');
-
 // TYPE 목록!
 const liOneEl = null;
 const liTwoEl = liEl[1].textContent;
 const liThrEl = liEl[2].textContent;
 const liFoEl = liEl[3].textContent;
 
-searchInputEl.setAttribute('placeholder', 'Movie Tree');
-
-
-
+searchInputEl.setAttribute('placeholder', 'Selet Type');
 
 
 // 영화를 더 가져와야 하는지 관찰!
@@ -47,9 +41,6 @@ const io = new IntersectionObserver(function (entries) {
   });
 });
 io.observe(observerEl);
-
-
-
 
 
 // Events!
@@ -67,7 +58,6 @@ searchInputEl.addEventListener('focus', () => {
   searchBoxEl.classList.add('normal-search');
   searchBoxEl.classList.remove('hello');
 })
-
 // 검색 이벤트!
 searchInputEl.addEventListener('keydown', event => {
   if (event.key === 'Enter') {
@@ -80,7 +70,6 @@ searchBtnEl.addEventListener('click', () => {
   searchInputEl.blur();
   firstMovies();
 });
-
 // 검색타입 이벤트!
 typeBtnEl.addEventListener('click', (event) => {
   event.stopPropagation();
@@ -92,21 +81,24 @@ window.addEventListener('click', (event) => {
 });
 liEl[0].addEventListener('click', () => {
   typeStartEl.textContent = liEl[0].textContent;
+  searchInputEl.setAttribute('placeholder', 'All Trees');
   return typeMode.type = liOneEl;
 });
 liEl[1].addEventListener('click', () => {
   typeStartEl.textContent = liEl[1].textContent;
+  searchInputEl.setAttribute('placeholder', 'Movie Trees');
   return typeMode.type = liTwoEl;
 });
 liEl[2].addEventListener('click', () => {
   typeStartEl.textContent = liEl[2].textContent;
+  searchInputEl.setAttribute('placeholder', 'Series Trees');
   return typeMode.type = liThrEl;
 });
 liEl[3].addEventListener('click', () => {
   typeStartEl.textContent = liEl[3].textContent;
+  searchInputEl.setAttribute('placeholder', 'Episode Trees');
   return typeMode.type = liFoEl;
 });
-
 // 검색창 고정 및 투명도 이벤트!
 window.addEventListener('scroll', function (e) {
   if (!timer) {
@@ -126,9 +118,6 @@ window.addEventListener('scroll', function (e) {
     }, 100);
   }
 });
-
-
-
 
 
 // Functions!
@@ -160,7 +149,7 @@ function renderMovies(Search = []) {
     title.classList.add('title');
     yearEl.classList.add('year');
     googleEl.classList.add('google');
-    googleEl.href = `https://www.google.com/search?q=${movie.Year}+${movie.Title}+movie`;
+    googleEl.href = `https://www.google.com/search?q=${movie.Title}+movie`;
     googleEl.target = '_blank';
     googleEl.textContent = 'G';
     // 영화 요소 넣기
@@ -173,15 +162,13 @@ function renderMovies(Search = []) {
   });
   moviesEl.append(...movieEls);
 }
-
 // 실제 영화 가져오기!
 async function getMovie(name) {
   let res = await fetch(`https://www.omdbapi.com?apikey=7035c60c&s=${name}&page=${page}&type=${typeMode.type}`);
   res = await res.json();
   return res;
 }
-
-// 로딩 애니메이션(?) 동작!
+// 로딩 애니메이션!
 function exeLoading(state) {
   loading = state;
   if (loading) {
@@ -190,7 +177,6 @@ function exeLoading(state) {
     observerEl.classList.remove('loading');
   }
 }
-
 // 영화 기본 검색!
 async function firstMovies() {
   exeLoading(true);
@@ -205,9 +191,7 @@ async function firstMovies() {
   renderMovies(Search);
   exeLoading(false);
   firstRequest = false;
-  console.log(Search)
 }
-
 // 영화 추가 검색!
 async function moreMovies() {
   if (firstRequest) return;
