@@ -9,16 +9,13 @@ body {
   background-attachment: fixed;
   width: 100vw;
   height: 100vh;
-  // background-color: tomato;
   position: relative;
   font-family: 'Lato', sans-serif;
   font-weight: 700;
 }
 .cursor {
   cursor: s-resize;
-  
 }
-
 
 
 section {
@@ -36,12 +33,16 @@ section {
     right: 0;
     margin: -10% 0;
     text-align: center;
+
+
+    // 메인 타이틀
+    // 메인 타이틀
     .main {
       position: absolute;
       top: 1rem;
       perspective: 1500px;
       h1 {
-        color: rgb(255, 255, 255);
+        color: #fff;
         font-size: 8.5rem;
         font-family: 'Vesper Libre', serif;
         font-weight: 700;
@@ -49,12 +50,16 @@ section {
         opacity: 0.8;
       }
     }
-    .bye {
+    .main.bye {
     top: 3rem;
     transform: scaleY(0);
     opacity: 0;
     transition: 0.6s;
     }
+
+
+    // 검색 박스
+    // 검색 박스
     .search-box {
       background-color: $white;
       width: 100%;
@@ -86,7 +91,7 @@ section {
           outline: none;
         }
       }
-      .input-off {
+      .input.input-off {
         display: none;
       }
       .type-container {
@@ -95,7 +100,6 @@ section {
         color: $gray;
         font-family: 'Lato', sans-serif;
         font-size: 2.2rem;
-        font-weight: 600;
         .type-btn {
           height: 4.4rem;
           display: flex;
@@ -121,7 +125,7 @@ section {
             transition: 0.6s;
           }
         }
-        .active {
+        .type.active {
           height: 11rem;
           transition: 0.6s;
           li {
@@ -136,39 +140,35 @@ section {
         display: flex;
         align-items: center;
         cursor: pointer;
-        .material-symbols-outlined {
+        .bi-search {
+          width: 4rem;
+          height: 2rem;
           color: $gray;
-          font-size: 3rem;
         }
       }
     }
-    .hello {
+    .search-box.hello {
       top: 1rem;
       opacity: 1;
       transition: 1s;
     }
-    .normal-search {
+    .search-box.normal-search {
       top: 1rem;
       opacity: 1;
     }
-    .fix {
+    .search-box.fix {
       width: 50.4rem;
       height: 4rem;
       position: fixed;
       opacity: 0.7;
-      input {
-        color: $gray;
-      }
     }
-    .search-on {
+    .search-box.search-on {
       opacity: 1;
     }
 
 
-
-
-
-
+    // 검색 결과 총 개수
+    // 검색 결과 총 개수
     .total {
       margin-top: 2rem;
       height: 20%;
@@ -183,9 +183,8 @@ section {
     }
 
 
-
-
-
+    // 영화 정보
+    // 영화 정보
     .movies {
       display: flex;
       flex-wrap: wrap;
@@ -200,6 +199,7 @@ section {
         img {
           width: 14rem;
           height: 21rem;
+          border: #304430 solid 1px;
           border-radius: 1rem;
           transition: 0.4s;
         }
@@ -214,7 +214,6 @@ section {
           color: #fff;
           opacity: 0;
           transition: 0.6s;
-          
         }
         .title {
           top: 4rem;
@@ -272,17 +271,14 @@ section {
   }
 
 
-
-
-
-
+  // 스크롤 조건 타겟 감시 & 스피닝
+  // 스크롤 조건 타겟 감시 & 스피닝
   .observer {
-    font-size: 40px;
-    span {
-      padding: 50px 0;
+    margin: 2rem 0;
+    .spinner-border {
       display: none;
     }
-    &.loading span {
+    &.loading .spinner-border {
       display: block;
     }
   }
