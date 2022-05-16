@@ -149,7 +149,7 @@ function renderMovies(Search = []) {
     title.classList.add('title');
     yearEl.classList.add('year');
     googleEl.classList.add('google');
-    googleEl.href = `https://www.google.com/search?q=${movie.Title}+movie`;
+    googleEl.href = `https://www.google.com/search?q=${movie.Year}+${movie.Title}+movie`;
     googleEl.target = '_blank';
     googleEl.textContent = 'G';
     // 영화 요소 넣기
