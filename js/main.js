@@ -45,7 +45,7 @@ const liTwoEl = liEl[1].textContent;
 const liThrEl = liEl[2].textContent;
 const liFoEl = liEl[3].textContent;
 
-searchInputEl.setAttribute('placeholder', 'Selet Type');
+searchInputEl.setAttribute('placeholder', 'Select Type');
 
 
 // 영화를 더 가져와야 하는지 관찰!
