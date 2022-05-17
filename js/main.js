@@ -22,6 +22,23 @@ const searchBtnEl = document.querySelector('.search-btn');
 const resultsEl = document.querySelector('.results');
 const moviesEl = document.querySelector('.movies');
 const observerEl = document.querySelector('.observer');
+// 클래스명 객체
+const CLASS = {
+  HELLO: 'hello',
+  BYE: 'bye',
+  INPUTOFF: 'input-off',
+  CURSOR: 'cursor',
+  NORMAL: 'normal-search',
+  ACTIVE: 'active',
+  FIX: 'fix',
+  SEARCHON: 'search-on',
+  MOVIEBOX: 'movie-box',
+  TITLE: 'title',
+  YEAR: 'year',
+  GOOGLE: 'google',
+  SIZEDOWN: 'size-down',
+  LOAD: 'loading'
+}
 // TYPE 목록!
 const liOneEl = null;
 const liTwoEl = liEl[1].textContent;
@@ -47,16 +64,16 @@ io.observe(observerEl);
 // Events!
 // 메인 타이틀 이벤트!
 window.addEventListener('wheel', () => {
-  mainEl.classList.add('bye');
-  searchBoxEl.classList.add('hello');
-  inputEl.classList.remove('input-off');
-  bodyEl.classList.remove('cursor');
+  mainEl.classList.add(CLASS.BYE);
+  searchBoxEl.classList.add(CLASS.HELLO);
+  inputEl.classList.remove(CLASS.INPUTOFF);
+  bodyEl.classList.remove(CLASS.CURSOR);
 }, {
   once: true
 })
 searchInputEl.addEventListener('focus', () => {
-  searchBoxEl.classList.add('normal-search');
-  searchBoxEl.classList.remove('hello');
+  searchBoxEl.classList.add(CLASS.NORMAL);
+  searchBoxEl.classList.remove(CLASS.HELLO);
 })
 // 검색 이벤트!
 searchInputEl.addEventListener('keydown', event => {
@@ -73,11 +90,11 @@ searchBtnEl.addEventListener('click', () => {
 // 검색타입 이벤트!
 typeBtnEl.addEventListener('click', (event) => {
   event.stopPropagation();
-  typeEl.classList.add('active');
+  typeEl.classList.add(CLASS.ACTIVE);
 });
 window.addEventListener('click', (event) => {
   event.stopPropagation();
-  typeEl.classList.remove('active');
+  typeEl.classList.remove(CLASS.ACTIVE);
 });
 liEl[0].addEventListener('click', () => {
   typeStartEl.textContent = liEl[0].textContent;
@@ -105,15 +122,15 @@ window.addEventListener('scroll', function (e) {
     timer = setTimeout(function() {
       timer = null;
       if(window.scrollY > 371) {
-        searchBoxEl.classList.add('fix');
+        searchBoxEl.classList.add(CLASS.FIX);
         searchInputEl.addEventListener('focus', () => {
-          searchBoxEl.classList.add('search-on');
+          searchBoxEl.classList.add(CLASS.SEARCHON);
         });
         searchInputEl.addEventListener('blur', () => {
-          searchBoxEl.classList.remove('search-on');
+          searchBoxEl.classList.remove(CLASS.SEARCHON);
         });
       } else {
-        searchBoxEl.classList.remove('fix');
+        searchBoxEl.classList.remove(CLASS.FIX);
       }
     }, 100);
   }
@@ -145,11 +162,11 @@ function renderMovies(Search = []) {
     // 영화 구글 검색
     const movieEl = document.createElement('div');
     const googleEl = document.createElement('a');
-    movieEl.classList.add('movie-box');
-    title.classList.add('title');
-    yearEl.classList.add('year');
-    googleEl.classList.add('google');
-    googleEl.href = `https://www.google.com/search?q=${movie.Year}+${movie.Title}+movie`;
+    movieEl.classList.add(CLASS.MOVIEBOX);
+    title.classList.add(CLASS.TITLE);
+    yearEl.classList.add(CLASS.YEAR);
+    googleEl.classList.add(CLASS.GOOGLE);
+    googleEl.href = `https://www.google.com/search?q=${movie.Year}+${movie.Title}+${typeMode.type}`;
     googleEl.target = '_blank';
     googleEl.textContent = 'G';
     // 영화 요소 넣기
@@ -157,7 +174,7 @@ function renderMovies(Search = []) {
     movieEls.push(movieEl);
     let titleLe = movie.Title;
     if (titleLe.length > 17) {
-      title.classList.add('size-down');
+      title.classList.add(CLASS.SIZEDOWN);
     }
   });
   moviesEl.append(...movieEls);
@@ -172,9 +189,9 @@ async function getMovie(name) {
 function exeLoading(state) {
   loading = state;
   if (loading) {
-    observerEl.classList.add('loading');
+    observerEl.classList.add(CLASS.LOAD);
   } else {
-    observerEl.classList.remove('loading');
+    observerEl.classList.remove(CLASS.LOAD);
   }
 }
 // 영화 기본 검색!
